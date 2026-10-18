@@ -1,0 +1,55 @@
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-app}
+      MYSQL_USER: ${DB_USER:-app}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-app}
+      TZ: Asia/Tokyo
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-app}
+      DB_USER: ${DB_USER:-app}
+      DB_PASSWORD: ${DB_PASSWORD:-app}
+      TZ: Asia/Tokyo
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+      - go-mod:/go/pkg/mod
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    environment:
+      PUBLIC_API_URL: http://localhost:8080
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "4321:4321"
+    volumes:
+      - ./frontend:/app
+      - node-modules:/app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  db-data:
+  go-mod:
+  node-modules:

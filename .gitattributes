@@ -1,0 +1,2 @@
+# Windows(WSL)でも改行をLFに固定する
+* text=auto eol=lf
