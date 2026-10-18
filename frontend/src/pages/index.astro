@@ -1,0 +1,41 @@
+---
+const api = import.meta.env.PUBLIC_API_URL;
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>makeit-lp</title>
+  </head>
+  <body>
+    <main>
+      <h1>Astro is running</h1>
+      <p>API: <code id="api">確認中...</code></p>
+    </main>
+    <script define:vars={{ api }}>
+      fetch(api + "/api/health")
+        .then((r) => r.json())
+        .then((j) => (document.getElementById("api").textContent = JSON.stringify(j)))
+        .catch((e) => (document.getElementById("api").textContent = "NG: " + e));
+    </script>
+  </body>
+</html>
+
+<style>
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    line-height: 1.6;
+  }
+  main {
+    max-width: 40rem;
+    margin: 4rem auto;
+    padding: 0 1rem;
+  }
+  code {
+    background: #f0f0f0;
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+  }
+</style>

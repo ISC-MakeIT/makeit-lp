@@ -1,0 +1,8 @@
+root = "."
+tmp_dir = "tmp"
+[build]
+  cmd = "go build -o ./tmp/main ."
+  bin = "./tmp/main"
+  # bind mount上のファイル変更検知(Windows/WSL対策)
+  poll = true
+  poll_interval = 500
