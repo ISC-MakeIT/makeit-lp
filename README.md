@@ -91,6 +91,8 @@ docker compose ps
 
 ## 4. 日常の使い方
 
+同じ操作は `make` でも実行できます。一覧は `make` または `make help`。
+
 | やりたいこと | コマンド |
 |--------------|----------|
 | 起動 | `docker compose up -d` |
@@ -146,6 +148,7 @@ docker compose down -v && docker compose up -d
 ```
 .
 ├── compose.yaml        # 全サービスの定義
+├── Makefile            # 起動・停止などのショートカット (make help)
 ├── .env.example        # 環境変数のサンプル(任意)
 ├── backend/            # Go (main.go, Dockerfile, .air.toml)
 └── frontend/           # Astro (src/pages/index.astro, Dockerfile)
