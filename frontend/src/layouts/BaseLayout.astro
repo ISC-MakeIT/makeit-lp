@@ -1,0 +1,66 @@
+---
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import "../styles/global.css";
+interface Props {
+  title?: string;
+  description?: string;
+  class?: string;
+}
+const {
+  title,
+  description = "MakeITは、横浜・情報科学専門学校でアプリ・サービス開発を行う「ものづくり」サークルです。",
+  class: className,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#111111" />
+    <title>{title ? `${title} | MakeIT` : 'MakeIT | ものづくりサークル'}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+    />
+  </head>
+  <body class={className}>
+    <a class="skip-link" href="#main">
+      本文へスキップ
+    </a>
+    <div class="site-shell">
+      <Header />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <script>
+      // Keep the exported SVG's intrinsic dimensions; scale its presentation only.
+      function scaleAsset(target: Element) {
+        const img = target.querySelector("img");
+        if (img && img.naturalWidth) {
+          const scaleX = target.clientWidth / img.naturalWidth;
+          const scaleY = target.clientHeight / img.naturalHeight;
+          img.style.transform = `scale(${scaleX}, ${scaleY})`;
+        }
+      }
+      const observer = new ResizeObserver((entries) => {
+        for (const { target } of entries) scaleAsset(target);
+      });
+      document
+        .querySelectorAll<HTMLElement>("[data-asset]")
+        .forEach((element) => {
+          observer.observe(element);
+          element
+            .querySelector("img")
+            ?.addEventListener("load", () => scaleAsset(element));
+        });
+    </script>
+  </body>
+</html>

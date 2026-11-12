@@ -1,0 +1,145 @@
+---
+import { achievements, posts } from "../data/content";
+interface Props {
+  detailed?: boolean;
+}
+const { detailed = false } = Astro.props;
+---
+
+<div
+  class="carousel"
+  data-carousel
+  role="region"
+  aria-roledescription="カルーセル"
+  aria-label="制作実績"
+>
+  <div class="carousel-window">
+    <div
+      class="carousel-track"
+      data-track
+      tabindex="0"
+      aria-label="制作実績一覧。横にスクロールできます"
+    >
+      {achievements.map((item, index) => (
+        <a
+          class="achievement-card"
+          href={`/blog/${posts[index].slug}/`}
+          data-slide
+          aria-label={`${index + 1}. ${item.title}`}
+        >
+          <div class="achievement-image"></div>
+          <div class="achievement-body">
+            <h3>{item.title}</h3>
+            {detailed && <p>サークルの活動として制作したホームページです。</p>}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+  <div class="carousel-dots" aria-label="表示する実績を選択">
+    {achievements.map((_, index) => (
+      <button
+        data-dot
+        data-index={index}
+        aria-label={`実績 ${index + 1} を表示`}
+        aria-pressed={index === 2 ? "true" : "false"}
+      ></button>
+    ))}
+  </div>
+</div>
+<script>
+  document
+    .querySelectorAll<HTMLElement>("[data-carousel]")
+    .forEach((carousel) => {
+      const track = carousel.querySelector<HTMLElement>("[data-track]")!;
+      const slides = [...track.querySelectorAll<HTMLElement>("[data-slide]")];
+      const dots = [
+        ...carousel.querySelectorAll<HTMLButtonElement>("[data-dot]"),
+      ];
+      const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
+      let activeIndex = 2;
+      let ready = false;
+      let userInteracted = false;
+      const select = (index: number, smooth = true) => {
+        const slide = slides[index];
+        if (!slide) return;
+        track.scrollTo({
+          left:
+            slide.offsetLeft -
+            track.offsetLeft -
+            (track.clientWidth - slide.clientWidth) / 2,
+          behavior: smooth && !reduceMotion.matches ? "smooth" : "instant",
+        });
+      };
+      dots.forEach((dot, index) =>
+        dot.addEventListener("click", () => {
+          userInteracted = true;
+          select(index);
+        }),
+      );
+      for (const event of ["pointerdown", "wheel", "touchstart"]) {
+        track.addEventListener(
+          event,
+          () => {
+            userInteracted = true;
+          },
+          { passive: true },
+        );
+      }
+      let pending = false;
+      track.addEventListener(
+        "scroll",
+        () => {
+          if (pending || !ready || !userInteracted) return;
+          pending = true;
+          requestAnimationFrame(() => {
+            const center = track.scrollLeft + track.clientWidth / 2;
+            const distances = slides.map((slide) =>
+              Math.abs(
+                slide.offsetLeft -
+                  track.offsetLeft +
+                  slide.clientWidth / 2 -
+                  center,
+              ),
+            );
+            const active = distances.indexOf(Math.min(...distances));
+            activeIndex = active;
+            dots.forEach((dot, index) =>
+              dot.setAttribute("aria-pressed", String(index === active)),
+            );
+            pending = false;
+          });
+        },
+        { passive: true },
+      );
+      track.addEventListener("keydown", (event) => {
+        if (
+          event.target !== track ||
+          !["ArrowLeft", "ArrowRight"].includes(event.key)
+        )
+          return;
+        event.preventDefault();
+        userInteracted = true;
+        const active = dots.findIndex(
+          (dot) => dot.getAttribute("aria-pressed") === "true",
+        );
+        select(
+          Math.max(
+            0,
+            Math.min(
+              slides.length - 1,
+              active + (event.key === "ArrowRight" ? 1 : -1),
+            ),
+          ),
+        );
+      });
+      const resize = new ResizeObserver(() => {
+        if (ready) select(activeIndex, false);
+      });
+      resize.observe(track);
+      document.fonts.ready.then(() => {
+        select(activeIndex, false);
+        ready = true;
+      });
+    });
+</script>

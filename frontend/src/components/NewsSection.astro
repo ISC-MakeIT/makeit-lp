@@ -1,0 +1,28 @@
+---
+import SectionTitle from "./SectionTitle.astro";
+import { posts } from "../data/content";
+interface Props {
+  title?: string;
+}
+const { title = "News" } = Astro.props;
+---
+
+<section class="section news-section">
+  <div class="news-heading">
+    <SectionTitle title={title} />
+    <a class="outline-button" href="/blog/">
+      View more
+    </a>
+  </div>
+  <div class="news-list">
+    {posts.slice(0, 5).map((post) => (
+      <a class="news-item" href={`/blog/${post.slug}/`}>
+        <span>
+          <time datetime={post.date}>{post.displayDate}</time>
+          <span class="news-title">{post.title}</span>
+        </span>
+        <span class="news-arrow css-arrow" aria-hidden="true"></span>
+      </a>
+    ))}
+  </div>
+</section>

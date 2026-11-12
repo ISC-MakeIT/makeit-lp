@@ -1,0 +1,30 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "./Hero.astro";
+import About from "./About.astro";
+import Activity from "./Activity.astro";
+import NewsSection from "./NewsSection.astro";
+import SectionTitle from "./SectionTitle.astro";
+import Carousel from "./Carousel.astro";
+import ContactBanner from "./ContactBanner.astro";
+interface Props {
+  recruit?: boolean;
+}
+const { recruit = false } = Astro.props;
+---
+
+<BaseLayout title={recruit ? "Recruit" : "Activity"} class="invitation-page">
+  <Hero recruit={recruit} />
+  <About />
+  <Activity heading={recruit} />
+  <NewsSection title={recruit ? "Blog" : "News"} />
+  {recruit && (
+    <section class="achievements-section">
+      <div class="section">
+        <SectionTitle title="Achievements" />
+      </div>
+      <Carousel detailed />
+    </section>
+  )}
+  <ContactBanner />
+</BaseLayout>

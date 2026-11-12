@@ -1,0 +1,91 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Asset from "../../components/Asset.astro";
+import { posts, articleCopy } from "../../data/content";
+export function getStaticPaths() {
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+const { post } = Astro.props;
+---
+
+<BaseLayout title={post.title} class="article-page">
+  <img
+    class="article-hero"
+    src="/assets/figma/cd3ee.png"
+    width="1200"
+    height="640"
+    alt="キーボードのクローズアップ"
+  />
+  <div class="article-layout">
+    <article class="article-content">
+      <header class="article-title">
+        <h1>{post.title}</h1>
+        <time datetime={post.date}>{post.displayDate}</time>
+      </header>
+      {[1, 2, 3].map((section) => (
+        <section id={`heading-${section}`} class="article-section">
+          <h2>{section === 2 ? "見出し見出し見出し" : "見出し"}</h2>
+          <p>{articleCopy.introduction}</p>
+          <p>
+            {articleCopy.body}
+            <br />
+            {articleCopy.closing}
+          </p>
+          <h3 id={`subheading-${section}`}>小見出し</h3>
+          <p>{articleCopy.introduction}</p>
+          <p>{articleCopy.body}</p>
+          {section === 2 && (
+            <>
+              <figure>
+                <img
+                  src="/assets/figma/cd3ee.png"
+                  width="960"
+                  height="548"
+                  alt="キーボードのクローズアップ"
+                  loading="lazy"
+                />
+                <figcaption>※引用元</figcaption>
+              </figure>
+              <blockquote>
+                <Asset file="db883.svg" />
+                <div>
+                  <p>{articleCopy.body}</p>
+                  <cite>example.com</cite>
+                </div>
+              </blockquote>
+            </>
+          )}
+        </section>
+      ))}
+      <a class="outline-button article-back" href="/blog/">
+        記事一覧へ戻る
+      </a>
+    </article>
+    <aside class="article-sidebar" aria-label="記事ナビゲーション">
+      <nav class="table-of-contents" aria-label="目次">
+        {[1, 2, 3].map((section) => (
+          <div>
+            <a href={`#heading-${section}`}>見出し{section}</a>
+            <a href={`#subheading-${section}`}>小見出し</a>
+          </div>
+        ))}
+      </nav>
+      <h2>最新記事</h2>
+      {posts
+        .filter((item) => item.slug !== post.slug)
+        .slice(0, 3)
+        .map((item) => (
+          <a class="related-post" href={`/blog/${item.slug}/`}>
+            <span class="related-image" aria-hidden="true"></span>
+            <span>
+              <time datetime={item.date}>{item.displayDate}</time>
+              <span>{item.title}</span>
+            </span>
+          </a>
+        ))}
+    </aside>
+  </div>
+</BaseLayout>

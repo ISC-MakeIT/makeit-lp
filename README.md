@@ -81,7 +81,7 @@ docker compose ps
 
 | 確認先 | 期待する表示 |
 |--------|--------------|
-| http://localhost:4321 | 「Astro is running」と、`API: {"api":"ok","db":"ok"}` |
+| http://localhost:4321 | MakeITのトップページ |
 | http://localhost:8080/api/health | `{"api":"ok","db":"ok"}` |
 
 > フロントエンドは初回、`node_modules` のインストールが終わるまで 1〜2分 つながらないことがあります。
@@ -151,8 +151,10 @@ docker compose down -v && docker compose up -d
 ├── Makefile            # 起動・停止などのショートカット (make help)
 ├── .env.example        # 環境変数のサンプル(任意)
 ├── backend/            # Go (main.go, Dockerfile, .air.toml)
-└── frontend/           # Astro (src/pages/index.astro, Dockerfile)
+└── frontend/           # Astro (pages/components/layouts/data/styles, Dockerfile)
 ```
+
+フロントエンドのページ一覧・Figma参照・今後のAPI接続については [frontend/README.md](frontend/README.md) を参照してください。
 
 ---
 

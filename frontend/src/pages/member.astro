@@ -1,0 +1,37 @@
+---
+import BrandIcon from "../components/BrandIcon.astro";
+import DecorativeBars from "../components/DecorativeBars.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ContactBanner from "../components/ContactBanner.astro";
+import Asset from "../components/Asset.astro";
+import { members } from "../data/content";
+---
+
+<BaseLayout title="Member" class="member-page">
+  <div class="member-page-lines" aria-hidden="true">
+    <DecorativeBars />
+  </div>
+  <div class="member-page-lines-mobile" aria-hidden="true">
+    <DecorativeBars mobile />
+  </div>
+  <h1 class="member-page-title">Member</h1>
+  <section class="member-grid" aria-label="メンバー一覧">
+    {members.map((member, index) => (
+      <article class:list={["member-card", { "extra-member": index >= 8 }]}>
+        <div class="member-photo" aria-hidden="true"></div>
+        <div class="member-body">
+          <h2>{member.name}</h2>
+          <p class="member-department">{member.department}</p>
+          <p class="member-description">{member.description}</p>
+          <span class="profile-chip">
+            <BrandIcon name="github" /> / {member.github}
+          </span>
+          <span class="profile-chip">
+            <Asset file="5f6ec.svg" mobileFile="50bb0.svg" /> / {member.website}
+          </span>
+        </div>
+      </article>
+    ))}
+  </section>
+  <ContactBanner member />
+</BaseLayout>
