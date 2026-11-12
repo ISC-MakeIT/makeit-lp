@@ -1,0 +1,36 @@
+---
+import DecorativeBars from "./DecorativeBars.astro";
+interface Props {
+  recruit?: boolean;
+}
+const { recruit = false } = Astro.props;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero-lines" aria-hidden="true">
+    <DecorativeBars />
+  </div>
+  <div class="hero-lines-mobile" aria-hidden="true">
+    <DecorativeBars mobile />
+  </div>
+  <div class="hero-content">
+    <h1 id="hero-title">
+      <img
+        src="/assets/figma/6beda.png"
+        width="766"
+        height="220"
+        alt="Make IT"
+        fetchpriority="high"
+      />
+    </h1>
+    <p class="hero-tagline">
+      {recruit
+        ? "Would you like to join our club?"
+        : "If we can try, we can Make IT exciting."}
+    </p>
+    <p class="hero-invite">体験入部・案件依頼はこちらから</p>
+    <a class="join-button" href="/invitation/#activity">
+      Join/Job
+    </a>
+  </div>
+</section>

@@ -1,0 +1,48 @@
+---
+import BrandIcon from "./BrandIcon.astro";
+import SectionTitle from "./SectionTitle.astro";
+interface Props {
+  heading?: boolean;
+}
+const { heading = false } = Astro.props;
+---
+
+<section id="activity" class="section activity-section">
+  <SectionTitle title="Activity" class={heading ? undefined : "mobile-only"} />
+  <div class="activity-content">
+    <div class="activity-copy">
+      <p>
+        毎週月.水.金曜日、放課後の15:40以降に活動しています。
+        <br />
+        必ず参加しなければいけないということはなく、バイトや就活、プライベートと両立しながら活動することができます。
+      </p>
+      <p>
+        Discordをコミュニケーションツールとして使用しています。
+        <br />
+        連絡・質問はもちろん、雑談・独り言などでも気軽に利用してください。
+      </p>
+    </div>
+    <div class="activity-panel">
+      <div class="schedule">
+        <h3>活動時間</h3>
+        <div class="week" aria-label="活動日：月曜日・水曜日・金曜日">
+          {["日", "月", "火", "水", "木", "金", "土"].map((day, index) => (
+            <span class:list={{ active: [1, 3, 5].includes(index) }}>
+              {day}
+            </span>
+          ))}
+        </div>
+        <p>放課後　15:40〜</p>
+      </div>
+      <div class="tools">
+        <h3>使用ツール</h3>
+        <div class="discord">
+          <span class="discord-icon">
+            <BrandIcon name="discord" />
+          </span>
+          <span>Discord</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
