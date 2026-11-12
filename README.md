@@ -168,3 +168,5 @@ docker compose down -v && docker compose up -d
 | 保存しても反映されない | プロジェクトが `/mnt/c/...` にある可能性。`~/` 以下に置き直す |
 | `exec ... no such file or directory` / `\r` が出る | 改行コードがCRLFになっている。`git config --global core.autocrlf input` を実行し、クローンし直す |
 | 何かおかしい・最初からやり直したい | `docker compose down -v && docker compose up -d --build` (**DBの中身も消えます**) |
+
+gatiiku
