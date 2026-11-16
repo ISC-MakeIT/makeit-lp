@@ -1,0 +1,36 @@
+---
+import SectionTitle from "./SectionTitle.astro";
+interface Props {
+  member?: boolean;
+}
+const { member = false } = Astro.props;
+---
+
+<section
+  class:list={["section", "contact-banner", { "member-banner": member }]}
+  aria-label="入部・お仕事について"
+>
+  <div class="banner-glows" aria-hidden="true">
+    <span class="glow glow-one"></span>
+    <span class="glow glow-two"></span>
+    <span class="glow glow-three"></span>
+    <span class="glow glow-four"></span>
+  </div>
+  <div class="banner-content">
+    {!member && <SectionTitle title="Contact" />}
+    <p>
+      Make IT は初心者・やる気のある人大歓迎！
+      <br />
+      {member
+        ? "まずは体験入部から気軽に活動してみませんか？"
+        : "お仕事のご依頼もお待ちしています。"}
+      <br />
+      {member
+        ? "体験入部は下記のリンクから！"
+        : "仮入部・仕事のご依頼は下記のリンクから！"}
+    </p>
+    <a href="/invitation/#activity" class="join-button">
+      Join/Job
+    </a>
+  </div>
+</section>

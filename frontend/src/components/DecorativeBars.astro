@@ -1,0 +1,67 @@
+---
+interface Props {
+  mobile?: boolean;
+}
+const { mobile = false } = Astro.props;
+---
+
+<span
+  class:list={["decorative-bars", { "slanted-bars": mobile }]}
+  aria-hidden="true"
+>
+  <span></span>
+  <span></span>
+  <span></span>
+</span>
+<style>
+  .decorative-bars {
+    display: block;
+    position: relative;
+  }
+  .decorative-bars > span {
+    position: absolute;
+    top: 0;
+    width: calc(89.7511 * var(--u));
+    height: 100%;
+    border: calc(2 * var(--u)) solid var(--bar-color);
+    background: var(--bar-fill);
+  }
+  .decorative-bars > span:nth-child(1) {
+    left: 0;
+    --bar-color: #e60013;
+    --bar-fill: #e600131a;
+  }
+  .decorative-bars > span:nth-child(2) {
+    left: calc(132.832 * var(--u));
+    --bar-color: #303967;
+    --bar-fill: #3039671a;
+  }
+  .decorative-bars > span:nth-child(3) {
+    left: calc(265.663 * var(--u));
+    --bar-color: #ffe201;
+    --bar-fill: #ffe2011a;
+  }
+  .slanted-bars {
+    opacity: 0.5;
+  }
+  .slanted-bars > span {
+    width: calc(37.2773 * var(--u));
+    transform: matrix(1, 0, -0.366083, 0.930582, 0, 0);
+    transform-origin: top left;
+  }
+  .slanted-bars > span:nth-child(1) {
+    left: calc(214.437 * var(--u));
+    top: calc(32.4435 * var(--u));
+    height: calc(578.664 * var(--u));
+  }
+  .slanted-bars > span:nth-child(2) {
+    left: calc(286.709 * var(--u));
+    top: 0;
+    height: calc(783.181 * var(--u));
+  }
+  .slanted-bars > span:nth-child(3) {
+    left: calc(340.723 * var(--u));
+    top: calc(15.5658 * var(--u));
+    height: calc(876.421 * var(--u));
+  }
+</style>
