@@ -1,0 +1,24 @@
+---
+import discord from "bootstrap-icons/icons/discord.svg?raw";
+import github from "bootstrap-icons/icons/github.svg?raw";
+
+interface Props {
+  name: "discord" | "github";
+}
+const { name } = Astro.props;
+const icons = { discord, github };
+---
+
+<span class="brand-icon" aria-hidden="true" set:html={icons[name]} />
+
+<style>
+  .brand-icon {
+    display: block;
+    flex-shrink: 0;
+  }
+  .brand-icon :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
