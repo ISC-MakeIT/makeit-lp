@@ -1,41 +1,52 @@
 ---
-const api = import.meta.env.PUBLIC_API_URL;
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import SectionTitle from "../components/SectionTitle.astro";
+import Carousel from "../components/Carousel.astro";
+import ContactBanner from "../components/ContactBanner.astro";
 ---
-<!doctype html>
-<html lang="ja">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>makeit-lp</title>
-  </head>
-  <body>
-    <main>
-      <h1>Astro is running</h1>
-      <p>API: <code id="api">確認中...</code></p>
-    </main>
-    <script define:vars={{ api }}>
-      fetch(api + "/api/health")
-        .then((r) => r.json())
-        .then((j) => (document.getElementById("api").textContent = JSON.stringify(j)))
-        .catch((e) => (document.getElementById("api").textContent = "NG: " + e));
-    </script>
-  </body>
-</html>
 
-<style>
-  body {
-    margin: 0;
-    font-family: system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
-    line-height: 1.6;
-  }
-  main {
-    max-width: 40rem;
-    margin: 4rem auto;
-    padding: 0 1rem;
-  }
-  code {
-    background: #f0f0f0;
-    padding: 0.1em 0.4em;
-    border-radius: 4px;
-  }
-</style>
+<BaseLayout class="home-page">
+  <Hero />
+  <About />
+  <section class="section member-preview">
+    <SectionTitle title="Member" />
+    <div class="member-preview-content">
+      <div class="member-mosaic" aria-hidden="true">
+        <div>
+          {Array.from({ length: 6 }, () => (
+            <span />
+          ))}
+        </div>
+        <div>
+          {Array.from({ length: 5 }, () => (
+            <span />
+          ))}
+        </div>
+      </div>
+      <div class="member-preview-copy">
+        <p class="desktop-only">index</p>
+        <p class="mobile-only">index</p>
+        <a href="/member/" class="outline-button">
+          Member list
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="introduction-section">
+    <div class="section introduction-heading">
+      <SectionTitle title="Introduction" />
+      <p>
+        Make ITの活動について
+        <br />
+        内容・状況・実績
+      </p>
+    </div>
+    <Carousel />
+    <a href="/invitation/" class="outline-button">
+      View more
+    </a>
+  </section>
+  <ContactBanner />
+</BaseLayout>
