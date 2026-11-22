@@ -1,0 +1,110 @@
+---
+import "../../styles/blog.css";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { posts } from "../../data/posts";
+
+const sortedPosts = [...posts].sort((a, b) => b.date.localeCompare(a.date));
+const featuredPost = sortedPosts[0];
+const years = [...new Set(posts.map((post) => post.date.slice(0, 4)))].sort(
+  (a, b) => b.localeCompare(a),
+);
+---
+
+<BaseLayout title="Blog / News" class="blog-page">
+  <div class="blog-banner">
+    <h1>Blog</h1>
+  </div>
+  <div class="blog-container">
+    {featuredPost && (
+      <a class="featured-post" href={`/blog/${featuredPost.slug}/`}>
+        <h2>{featuredPost.title}</h2>
+        <p>{featuredPost.displayDate}</p>
+      </a>
+    )}
+    <div class="blog-controls">
+      <div class="sort-buttons" role="group" aria-label="記事の並び順">
+        <button data-sort="newest" aria-pressed="true">
+          新しい順
+        </button>
+        <button data-sort="oldest" aria-pressed="false">
+          古い順
+        </button>
+      </div>
+      <label class="period-filter">
+        <span class="period-filter-icon" aria-hidden="true"></span>
+        <span class="sr-only">記事の期間</span>
+        <select id="period-filter">
+          <option value="all">すべての期間</option>
+          {years.map((year) => (
+            <option value={year}>{year}年</option>
+          ))}
+        </select>
+        <span class="period-chevron" aria-hidden="true"></span>
+      </label>
+    </div>
+    <div class="blog-grid" id="blog-grid">
+      {sortedPosts.map((post, index) => (
+        <a
+          href={`/blog/${post.slug}/`}
+          class="blog-card"
+          data-date={post.date}
+          data-order={index}
+        >
+          <div class="blog-card-image">
+            <span class="blog-card-arrow">
+              <span class="css-arrow" aria-hidden="true"></span>
+            </span>
+          </div>
+          <h2>{post.title}</h2>
+          <time datetime={post.date}>{post.displayDate}</time>
+        </a>
+      ))}
+    </div>
+    <p id="blog-empty" class="empty-state" role="status" hidden>
+      この期間の記事はありません。
+    </p>
+    <p class="blog-count sr-only" role="status" aria-live="polite">
+      {posts.length}件の記事
+    </p>
+  </div>
+</BaseLayout>
+<script>
+  const grid = document.querySelector<HTMLElement>("#blog-grid")!;
+  const cards = [...grid.querySelectorAll<HTMLElement>(".blog-card")];
+  const buttons = [
+    ...document.querySelectorAll<HTMLButtonElement>("[data-sort]"),
+  ];
+  const period = document.querySelector<HTMLSelectElement>("#period-filter")!;
+  let sort = "newest";
+  function update() {
+    const ordered = [...cards].sort((a, b) => {
+      const difference = (a.dataset.date || "").localeCompare(
+        b.dataset.date || "",
+      );
+      return (
+        (sort === "newest" ? -difference : difference) ||
+        Number(a.dataset.order) - Number(b.dataset.order)
+      );
+    });
+    let count = 0;
+    ordered.forEach((card) => {
+      card.hidden =
+        period.value !== "all" && !card.dataset.date?.startsWith(period.value);
+      if (!card.hidden) count++;
+      grid.append(card);
+    });
+    document.querySelector<HTMLElement>("#blog-empty")!.hidden = count > 0;
+    document.querySelector<HTMLElement>(".blog-count")!.textContent =
+      `${count}件の記事`;
+    buttons.forEach((button) =>
+      button.setAttribute("aria-pressed", String(button.dataset.sort === sort)),
+    );
+  }
+  buttons.forEach((button) =>
+    button.addEventListener("click", () => {
+      sort = button.dataset.sort || "newest";
+      update();
+    }),
+  );
+  period.addEventListener("change", update);
+</script>
