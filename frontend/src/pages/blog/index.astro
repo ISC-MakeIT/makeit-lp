@@ -2,6 +2,12 @@
 import "../../styles/blog.css";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { posts } from "../../data/posts";
+
+const sortedPosts = [...posts].sort((a, b) => b.date.localeCompare(a.date));
+const featuredPost = sortedPosts[0];
+const years = [...new Set(posts.map((post) => post.date.slice(0, 4)))].sort(
+  (a, b) => b.localeCompare(a),
+);
 ---
 
 <BaseLayout title="Blog / News" class="blog-page">
@@ -9,10 +15,12 @@ import { posts } from "../../data/posts";
     <h1>Blog</h1>
   </div>
   <div class="blog-container">
-    <a class="featured-post" href={`/blog/${posts[0].slug}/`}>
-      <h2>記事名</h2>
-      <p>2025年〇〇月〇〇日</p>
-    </a>
+    {featuredPost && (
+      <a class="featured-post" href={`/blog/${featuredPost.slug}/`}>
+        <h2>{featuredPost.title}</h2>
+        <p>{featuredPost.displayDate}</p>
+      </a>
+    )}
     <div class="blog-controls">
       <div class="sort-buttons" role="group" aria-label="記事の並び順">
         <button data-sort="newest" aria-pressed="true">
@@ -27,14 +35,15 @@ import { posts } from "../../data/posts";
         <span class="sr-only">記事の期間</span>
         <select id="period-filter">
           <option value="all">すべての期間</option>
-          <option value="2000">2000年</option>
-          <option value="2025">2025年</option>
+          {years.map((year) => (
+            <option value={year}>{year}年</option>
+          ))}
         </select>
         <span class="period-chevron" aria-hidden="true"></span>
       </label>
     </div>
     <div class="blog-grid" id="blog-grid">
-      {posts.map((post, index) => (
+      {sortedPosts.map((post, index) => (
         <a
           href={`/blog/${post.slug}/`}
           class="blog-card"
@@ -46,9 +55,7 @@ import { posts } from "../../data/posts";
               <span class="css-arrow" aria-hidden="true"></span>
             </span>
           </div>
-          <h2>
-            {index === 0 ? "タイトルタイトルタイトルタイトル" : post.title}
-          </h2>
+          <h2>{post.title}</h2>
           <time datetime={post.date}>{post.displayDate}</time>
         </a>
       ))}
@@ -57,7 +64,7 @@ import { posts } from "../../data/posts";
       この期間の記事はありません。
     </p>
     <p class="blog-count sr-only" role="status" aria-live="polite">
-      12件の記事
+      {posts.length}件の記事
     </p>
   </div>
 </BaseLayout>
@@ -71,10 +78,13 @@ import { posts } from "../../data/posts";
   let sort = "newest";
   function update() {
     const ordered = [...cards].sort((a, b) => {
-      const difference =
-        (a.dataset.date || "").localeCompare(b.dataset.date || "") ||
-        Number(a.dataset.order) - Number(b.dataset.order);
-      return sort === "newest" ? -difference : difference;
+      const difference = (a.dataset.date || "").localeCompare(
+        b.dataset.date || "",
+      );
+      return (
+        (sort === "newest" ? -difference : difference) ||
+        Number(a.dataset.order) - Number(b.dataset.order)
+      );
     });
     let count = 0;
     ordered.forEach((card) => {
