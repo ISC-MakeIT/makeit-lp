@@ -1,0 +1,99 @@
+---
+import Asset from "./Asset.astro";
+const path = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <a class="header-logo" href="/" aria-label="MakeIT トップページ">
+    <Asset file="396ce.svg" mobileFile="905d9.svg" alt="MakeIT" />
+  </a>
+  <div class="header-actions">
+    <nav class="desktop-nav" aria-label="メインナビゲーション">
+      <a
+        href="/blog/"
+        aria-current={path.startsWith("/blog") ? "page" : undefined}
+      >
+        News
+      </a>
+      <a
+        href="/member/"
+        aria-current={path.startsWith("/member") ? "page" : undefined}
+      >
+        Members
+      </a>
+      <a
+        href="https://github.com/ISC-MakeIT"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        GitHub<span class="sr-only">（新しいタブ）</span>
+      </a>
+    </nav>
+    <a class="join-button" href="/invitation/#activity">
+      Join/Job
+    </a>
+    <button
+      class="menu-toggle"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      aria-label="メニューを開く"
+    >
+      <span class="menu-lines" aria-hidden="true"></span>
+    </button>
+  </div>
+  <nav
+    id="mobile-nav"
+    class="mobile-nav"
+    aria-label="モバイルナビゲーション"
+    hidden
+  >
+    <a href="/">Top</a>
+    <a href="/blog/">News</a>
+    <a href="/member/">Member</a>
+    <a href="/invitation/">Activity</a>
+    <a
+      href="https://github.com/ISC-MakeIT"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      GitHub
+    </a>
+  </nav>
+</header>
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".menu-toggle");
+  const menu = document.querySelector<HTMLElement>("#mobile-nav");
+  function closeMenu() {
+    if (!toggle || !menu) return;
+    menu.hidden = true;
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "メニューを開く");
+  }
+  toggle?.addEventListener("click", () => {
+    if (!menu) return;
+    const open = toggle.getAttribute("aria-expanded") !== "true";
+    menu.hidden = !open;
+    toggle.setAttribute("aria-expanded", String(open));
+    toggle.setAttribute(
+      "aria-label",
+      open ? "メニューを閉じる" : "メニューを開く",
+    );
+  });
+  menu
+    ?.querySelectorAll("a")
+    .forEach((link) => link.addEventListener("click", closeMenu));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !menu?.hidden) {
+      closeMenu();
+      toggle?.focus();
+    }
+  });
+  document.addEventListener("click", (event) => {
+    if (
+      event.target instanceof Node &&
+      !document.querySelector(".site-header")?.contains(event.target)
+    )
+      closeMenu();
+  });
+  matchMedia("(min-width: 901px)").addEventListener("change", closeMenu);
+</script>
